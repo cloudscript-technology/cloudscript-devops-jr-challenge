@@ -16,6 +16,20 @@ A solução foi desenvolvida seguindo boas práticas de Infrastructure as Code (
 
 ## 🏗️ Arquitetura
 
+![Diagrama de Arquitetura](fluxograma.png)
+
+### Diagrama Detalhado
+
+O diagrama acima ilustra a arquitetura completa da infraestrutura, mostrando:
+
+- **VPC** com CIDR 10.0.0.0/16 distribuída em 2 Availability Zones
+- **Subnets Públicas** contendo NAT Gateways (1 por AZ)
+- **Subnets Privadas** contendo os EKS Nodes
+- **Internet Gateway** para comunicação com a internet
+- **EKS Cluster Control Plane** gerenciado pela AWS
+
+### Representação em Texto
+
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                         AWS Region                          │
