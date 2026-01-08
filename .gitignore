@@ -35,19 +35,17 @@ terraform.rc
 *.temp
 
 # Arquivos de prints e exemplos (não versionar)
-prints_exemplo/
-GUIA_PRINTS.md
+
 gerar_prints_exemplo.sh
 capturar_prints.sh
-NOTAS_ENTREVISTA.md
+
 
 # Terraform plan files
 *.tfplan
 tfplan
 
 # Arquivos de prints e exemplos (não versionar)
-prints_exemplo/
-GUIA_PRINTS.md
+
 gerar_prints_exemplo.sh
 capturar_prints.sh
 *.png
