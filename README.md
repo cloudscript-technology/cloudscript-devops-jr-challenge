@@ -348,8 +348,6 @@ Esta seção lista brevemente os principais pontos de melhoria que seriam implem
 - **Custos**: Implementar Reserved Instances, usar Spot Instances onde apropriado, otimizar custos com Cost Explorer
 - **Governança**: Implementar AWS Organizations, configurar AWS Config para compliance, estabelecer políticas de tagging
 
-> ⚠️ **Nota**: Anotações detalhadas sobre melhorias serão discutidas durante a entrevista técnica.
-
 ## 📚 Referências Utilizadas
 
 - [Terraform AWS Provider Documentation](https://registry.terraform.io/providers/hashicorp/aws/latest/docs)
