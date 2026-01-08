@@ -60,7 +60,15 @@ Clone este repositório, acesse o diretório raiz e siga os passos abaixo no ter
    ```bash
    aws eks update-kubeconfig --region us-east-1 --name eks-desafio-devops
    ```
-
+![comando aws](assets/image1.png)
+1.Configuração do kubectl. </br>
+</br>
+![kubectl](assets/image2.png)
+2.Vizualiação dos nodes </br>
+</br>
+![teste ping](assets/ping.png) 
+3.Teste de ping dentro do pod. </br>
+</br>
 5. **Limpeza do Ambiente:** Ao finalizar os testes, destrua a infraestrutura para evitar cobranças:
    ```bash
    terraform destroy -auto-approve
