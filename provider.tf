@@ -3,7 +3,7 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~>5.0"
+      version = ">=2.0"
     }
   }
   #Para o desafio comentei o backend, para produção deve ser criado um bucket S3 
