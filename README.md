@@ -1,159 +1,75 @@
-# CloudScript Technology DevOps Challenge
+# Desafio CloudScript
 
-## 👋 Introdução
+## Introdução
+Este projeto apresenta uma implementação de infraestrutura em nuvem na AWS, composta por uma **VPC customizada** e um **Cluster EKS funcional**. A solução foi desenvolvida utilizando **Terraform** seguindo práticas de Infraestrutura como Código (IaC).
 
-Obrigado pelo interesse em participar do processo seletivo da **CloudScript Technology**!
+## Arquitetura
+![Diagrama da Arquitetura](arquitetura.png)
 
-A **CloudScript Technology** é uma empresa especializada em **Platform Engineering**, com foco em **arquitetura de aplicações Cloud-Native em nível empresarial**. Atuamos ajudando organizações a **desenhar, operar e escalar plataformas modernas em nuvem**, priorizando **segurança, eficiência e automação**.
+O diagrama acima ilustra a arquitetura baseada em **alta disponibilidade** e **segurança**.
 
-Este desafio foi elaborado para avaliar, de forma **prática e acessível**, os conceitos fundamentais de **DevOps**, **Infraestrutura como Código (IaC)** e **AWS**, considerando um perfil **DevOps Júnior**.
+### Principais componentes:
+- **VPC Customizada:** Rede criada do zero para controle granular.
+- **Multi-AZ:** Distribuição em 2 Zonas de Disponibilidade (`us-east-1a`, `us-east-1b`) para tolerância a falhas.
+- **Segmentação de Rede:**
+  - **Subnets Públicas:** Destinadas ao NAT Gateway e Load Balancers externos.
+  - **Subnets Privadas:** Destinadas aos Worker Nodes e interfaces do Control Plane (segurança reforçada).
+- **Cluster EKS:** Provisionado via módulo oficial (`terraform-aws-modules/eks/aws`) versão ~> 20.0.
+- **Managed Node Groups:** Instâncias EC2 gerenciadas pela AWS rodando **Amazon Linux 2023**.
 
-> ⚠️ **Importante:** não se preocupe caso não consiga resolver todos os pontos do desafio. Nosso objetivo é entender **seu raciocínio**, **organização do código** e **clareza na documentação das decisões**.
+## Decisões Técnicas
+Durante o desenvolvimento, as seguintes decisões estratégicas foram tomadas:
 
-No mais, divirta-se e boa sorte no desafio! 🚀
+1. **Distribuição Multi-AZ:** Optei por utilizar 2 AZs para os Worker Nodes. Mesmo sendo um ambiente de teste, isso demonstra conformidade com boas práticas de resiliência.
 
+2. **Single NAT Gateway:**
+   Utilizei a estratégia de *Single NAT Gateway* (um gateway compartilhado na subnet pública A atendendo as subnets privadas A e B). Isso reduz custos drasticamente para o desafio, mantendo a funcionalidade de saída de internet segura para os nós.
 
+3. **Módulo do Cluster EKS:**
+   A escolha pelo módulo oficial da comunidade visa abstrair a complexidade de configuração de IAM Roles e Security Groups, garantindo um cluster *Secure by Default* e de fácil manutenção.
 
-## 🎯 Objetivo do Desafio
+4. **Estado Terraform (Backend):**
+   A configuração de backend S3 está presente no arquivo `provider.tf`, porém comentada. Isso facilita a execução local pelo avaliador sem a necessidade de pré-provisionamento de buckets e travas no DynamoDB.
 
-Criar uma infraestrutura básica na AWS, utilizando **Terraform ou Terragrunt**, capaz de provisionar:
+## Pré-requisitos
+Para executar este projeto, certifique-se de ter em seu ambiente:
+- **Terraform** (v1.5 ou superior) instalado;
+- **AWS CLI** configurado com credenciais válidas;
+- **kubectl** instalado (opcional, para validação do cluster).
 
-- Uma **VPC customizada**
-- Um **cluster Amazon EKS funcional**
+## Execução
+Clone este repositório, acesse o diretório raiz e siga os passos abaixo no terminal:
 
-O foco do desafio **não é complexidade extrema**, mas sim:
-- Boas práticas
-- Organização
-- Clareza na implementação e documentação
+1. **Inicialize o Terraform:**
+   Baixa os providers e módulos necessários.
+   ```bash
+   terraform init
+   ```
 
+2. **Planeje a execução:** Gera um arquivo de plano para visualizar as mudanças.
+   ```bash
+   terraform plan -out plan.out
+   ```
 
-## 🧪 O que deve ser feito
+3. **Aplique a infraestrutura:** Provisiona os recursos na AWS.
+   ```bash
+   terraform apply plan.out
+   ```
 
-1. Faça um **fork** deste repositório  
-2. Implemente a infraestrutura solicitada via IaC
-3. Envie uma **Pull Request (PR)** contendo:
-
-   - Código Terraform funcional
-   - Um `README.md` explicando:
-     - Suas decisões técnicas
-     - Como o projeto foi estruturado
-     - Quais dificuldades encontrou
-   - Um **desenho/diagrama da arquitetura** (imagem ou link) explicando os serviços utilizados
-
-4. Faça **commits ao longo do processo** (evite apenas um commit final)
-
-> Queremos entender seu **raciocínio**, não apenas o resultado final 🙂
-
-## ⏱️ Tempo estimado
-
-Tempo estimado para execução: **3 a 5 horas**.
-
-## 🛠️ Requisitos Técnicos
-
-- AWS Provider
-- Uso de **modules** é bem-vindo (inclusive módulos públicos)
-- Código organizado, legível e reutilizável
-- Uso de **tags** nos recursos AWS
-
-## 🗄️ Estado do Terraform
-
-Não é obrigatório configurar backend remoto para o Terraform.  
-Caso não utilize, descreva no README como essa configuração seria feita em um ambiente real.
-
-## 🏗️ Infraestrutura mínima esperada
-
-### VPC
-- CIDR customizado
-- Subnets públicas e/ou privadas
-
-### Cluster EKS
-- Node Group (managed ou auto-managed)
-- Configuração básica para funcionamento do cluster
-
-## 📖 Documentação (README do candidato)
-
-No `README.md` do seu fork, inclua:
-
-- Visão geral da solução
-- Explicação da arquitetura
-- Como executar o Terraform (`init`, `plan`, `apply`)
-- Decisões técnicas tomadas
-- Pontos de melhoria identificados
-
----
-
-## 🧠 Para a entrevista
-
-Prepare anotações pessoais contendo:
-
-- Melhorias que você faria na infraestrutura
-- O que adicionaria em um cenário real de produção
-- Pontos relacionados a:
-  - Segurança
-  - Observabilidade
-  - Escalabilidade
-
-> ⚠️ **Não inclua essas anotações na Pull Request.**  
-> Elas serão discutidas durante a entrevista.
-
----
-
-## 📤 Entrega
-- Certifique-se de que a **Pull Request esteja aberta**
-
----
-
-## 💰 Custos de AWS
-
-Para a realização deste desafio, **não é necessário manter os recursos provisionados ativos**. A criação da infraestrutura pode ser realizada exclusivamente para fins de validação técnica, devendo os recursos ser removidos após a conclusão do teste.
-
-A **CloudScript Technology** não se responsabiliza, nem realiza reembolso, por quaisquer custos, tarifas ou encargos eventualmente gerados na conta AWS de titularidade do candidato durante a execução do desafio. Ao participar do processo seletivo, o candidato declara estar ciente e de acordo com estas condições.
-
-Recomenda-se que o candidato:
-- Utilize uma conta AWS pessoal ou destinada a testes
-- Execute `terraform destroy` ao finalizar a validação
-- Monitore o faturamento da AWS durante a execução
-
-
-## 📊 Critérios de Avaliação
-
-O desafio será avaliado com base em:
-
-- Organização e estrutura do código
-- Clareza e qualidade da documentação
-- Uso de boas práticas de IaC
-- Entendimento básico de AWS e EKS
-- Capacidade de justificar decisões técnicas
-
-## 🚫 Fora do escopo
-
-Os itens abaixo **não são obrigatórios** para este desafio:
-
-- Deploy de aplicações no EKS
-- Configuração de CI/CD
-- Observabilidade avançada
-- Hardening completo de segurança
-- Ambientes múltiplos (staging/produção)
-
-
-## 🔗 Referências
-
-Os links abaixo podem ser utilizados como apoio durante o desenvolvimento do desafio:
-
-https://conventionalcommits.org
-
-https://github.com/terraform-docs/terraform-docs
-
-https://developer.hashicorp.com/terraform/cli/commands/validate
-
-https://github.com/terraform-linters/tflint
-
-https://github.com/aquasecurity/tfsec
-
-https://terragrunt.gruntwork.io
-
-## 💬 Considerações finais
-
-Este desafio não é sobre acertar tudo, mas sobre mostrar seu processo de aprendizado, organização e comunicação técnica.
-
-Boa sorte e esperamos conversar com você em breve! 🚀
+4. **Configure o acesso ao Cluster (kubectl):** Após o fim da criação, copie e execute o comando exibido no output `configure_kubectl`:
+   ```bash
+   aws eks update-kubeconfig --region us-east-1 --name eks-desafio-devops
+   ```
+![comando aws](assets/image1.png)
+1.Configuração do kubectl. </br>
+</br>
+![kubectl](assets/image2.png)
+2.Vizualiação dos nodes </br>
+</br>
+![teste ping](assets/ping.png) 
+3.Teste de ping dentro do pod. </br>
+</br>
+5. **Limpeza do Ambiente:** Ao finalizar os testes, destrua a infraestrutura para evitar cobranças:
+   ```bash
+   terraform destroy -auto-approve
+   ```
